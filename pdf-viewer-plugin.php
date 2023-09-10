@@ -14,6 +14,106 @@ $ncrypt = new mukto90\Ncrypt;
 
 
 
+function custom_shortcode_function() {
+    // Check if the 'token' query parameter is present in the URL
+    if (isset($_GET['token'])) {
+        // Extract the encrypted token from the URL
+
+       
+        $encrypted_token = $_GET['token'];
+
+        // Decrypt the token to obtain the JSON data
+        $encryption_key = '34234'; // Replace with your actual secret key
+        $ncrypt = new mukto90\Ncrypt;
+
+    
+        // update_option("hit","url is being hit");
+        // $decrypted_data = $ncrypt->decrypt($encrypted_token, $encryption_key);
+        $decrypted_data = $ncrypt->decrypt($encrypted_token);
+        // update_option( 'decrypted data',  $decrypted_data ); 
+
+
+        $url = get_option( 'restrict-elementor-pro_basic', true );
+        update_option("pdf_url",$url);
+ 
+
+        $pdf_urls = get_option('pdf_url', array()); // Get the array stored in the pdf_url option
+        update_option("pdf_urls",$pdf_urls );
+        $sample_file2_url = isset($pdf_urls['sample_file2']) ? $pdf_urls['sample_file2'] : '';
+        $sample_file_url = isset($pdf_urls['sample_file']) ? $pdf_urls['sample_file'] : '';
+      
+        $basename2 = basename($sample_file2_url);
+        $basename1 = basename($sample_file_url );
+
+        update_option("french",$basename2);
+        update_option("english",$basename1);
+
+        // $all_pdf_url = get_option( 'french' );
+        
+        // echo($all_pdf_url);
+// update_option("found",$$all_pdf_url);
+
+// return '<iframe src="' . esc_url($all_pdf_url) . '" width="100%" height="600" frameborder="0"></iframe>';
+
+        // Check if decryption was successful
+        if ($decrypted_data !== false) {
+            // Parse the JSON data
+            $data = json_decode($decrypted_data, true);
+            update_option( 'jsondecrypted_data',   $data ); 
+            // Check if 'encryptionKey' and 'language' are present in the JSON data
+            if (isset($data['encryptionKey']) && isset($data['language'])) {
+                // Extract the hash and language
+                $hash = $data['encryptionKey']; // Assuming 'encryptionKey' is the hash
+                $language = $data['language'];
+                update_option( 'language param is got here',   $language ); 
+                $all_pdf_url = get_option(  $language );
+                
+                if (!empty($all_pdf_url )) {
+                    return '<iframe src="' . esc_url($all_pdf_url) . '" width="100%" height="600" frameborder="0"></iframe>';
+                } else {
+                    return 'PDF not available for this language.';
+                }
+                // For example, you can return a message based on the extracted values
+                return "Hash: $hash, Language: $language";
+            }
+        }
+       
+    }
+
+    // Return a default message if the URL doesn't contain a valid token
+    return 'Invalid or missing token in the URL.';
+
+}
+
+
+
+
+function find_pdf_for_language($language, $pdf_urls) {
+    // Loop through the PDF URLs in the database
+    foreach ($pdf_urls as $filename => $url) {
+        // Check if the entire filename matches the requested language (including ".pdf" extension)
+        update_option("file_language3",$filename);
+        $sample_file2_url = isset($pdf_urls[$filename]) ? $pdf_urls[$filename] : '';
+       
+    //    $basename = basename($sample_file2_url);
+       update_option("base_name",$sample_file2_url);
+       
+        if ($filename === $language) {
+            // You found a matching PDF file, so return its URL
+            return $url;
+        }
+    }
+
+    // If no matching PDF file was found, return an empty string or handle it as needed
+    return '';
+}
+
+
+add_shortcode('pdf_viewer', 'custom_shortcode_function');
+
+
+
+
 
 
 // Function to generate the PDF viewer URL with encrypted key and language
@@ -60,10 +160,10 @@ function generate_pdf_viewer_url($encryptionKey, $language) {
     // Add the encrypted key as a query parameter to the URL
     $url = $base_url . '?token=' . urlencode($encrypted_key);
 
-    
+    // Add the encrypted key and language as query parameters to the URL
+    // $url = $base_url . '?token=' . urlencode($encrypted_key) . '&language=' . urlencode($language);
     return $url;
 }
-
 
 
 
