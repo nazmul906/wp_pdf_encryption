@@ -9,7 +9,7 @@ require_once(plugin_dir_path(__FILE__) . 'vendor/autoload.php');
 
 // include 'vendor/autoload.php';
 // Initialize the Ncrypt class
-// $ncrypt = new mukto90\Ncrypt\Ncrypt();
+
 $ncrypt = new mukto90\Ncrypt;
 
 
@@ -23,7 +23,7 @@ function custom_shortcode_function() {
         $encrypted_token = $_GET['token'];
 
         // Decrypt the token to obtain the JSON data
-        $encryption_key = '34234'; // Replace with your actual secret key
+        $encryption_key = '34234'; 
         $ncrypt = new mukto90\Ncrypt;
 
     
@@ -73,39 +73,16 @@ function custom_shortcode_function() {
                 } else {
                     return 'PDF not available for this language.';
                 }
-                // For example, you can return a message based on the extracted values
-                return "Hash: $hash, Language: $language";
+               
+                // return "Hash: $hash, Language: $language";
             }
         }
        
     }
 
-    // Return a default message if the URL doesn't contain a valid token
+
     return 'Invalid or missing token in the URL.';
 
-}
-
-
-
-
-function find_pdf_for_language($language, $pdf_urls) {
-    // Loop through the PDF URLs in the database
-    foreach ($pdf_urls as $filename => $url) {
-        // Check if the entire filename matches the requested language (including ".pdf" extension)
-        update_option("file_language3",$filename);
-        $sample_file2_url = isset($pdf_urls[$filename]) ? $pdf_urls[$filename] : '';
-       
-    //    $basename = basename($sample_file2_url);
-       update_option("base_name",$sample_file2_url);
-       
-        if ($filename === $language) {
-            // You found a matching PDF file, so return its URL
-            return $url;
-        }
-    }
-
-    // If no matching PDF file was found, return an empty string or handle it as needed
-    return '';
 }
 
 
