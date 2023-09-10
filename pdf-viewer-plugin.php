@@ -9,12 +9,16 @@ require_once(plugin_dir_path(__FILE__) . 'vendor/autoload.php');
 
 // include 'vendor/autoload.php';
 // Initialize the Ncrypt class
-
+// $ncrypt = new mukto90\Ncrypt\Ncrypt();
 $ncrypt = new mukto90\Ncrypt;
 
 
 
 
+
+// Function to generate the PDF viewer URL with encrypted key and language
+
+add_action('rest_api_init', 'register_pdf_viewer_api_endpoint');
 
 function register_pdf_viewer_api_endpoint() {
     register_rest_route('pdf-viewer/v1', '/generate-url', array(
@@ -54,13 +58,11 @@ function generate_pdf_viewer_url($encryptionKey, $language) {
     // update_option( 'encrypt',  $encrypted_key);
 
     // Add the encrypted key as a query parameter to the URL
-    // $url = $base_url . '?token=' . urlencode($encrypted_key);
+    $url = $base_url . '?token=' . urlencode($encrypted_key);
 
-    // Add the encrypted key and language as query parameters to the URL
-    $url = $base_url . '?token=' . urlencode($encrypted_key) . '&language=' . urlencode($language);
+    
     return $url;
 }
-
 
 
 
