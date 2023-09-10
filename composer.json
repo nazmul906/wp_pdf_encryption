@@ -1,0 +1,22 @@
+{
+  "name": "fs/pdf-viewer-plugin",
+  "description": "encryption enabled pdf viewer",
+  "type": "wordpress-plugin",
+  "license": "GPLv2",
+  "autoload": {
+    "psr-4": {
+      "Fs\\PdfViewerPlugin\\": "src/",
+      "mukto90\\Ncrypt\\": "vendor/mukto90/ncrypt/src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "nazmul906",
+      "email": "nazmulhb96@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "mukto90/ncrypt": "dev-master"
+  }
+}
